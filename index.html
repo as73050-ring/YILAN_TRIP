@@ -1,0 +1,654 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>宜蘭兩天一夜｜2026 行程總覽</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500..700;1,9..144,500&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap">
+<style>
+:root{
+  --bg:#f3f1ea;
+  --surface:#ffffff;
+  --surface-2:#eceae0;
+  --ink:#20251f;
+  --ink-soft:#5a6358;
+  --line:#dcd8c9;
+  --clay:#c1622d;
+  --clay-soft:#f3ded0;
+  --teal:#2f5a53;
+  --teal-soft:#dbe8e3;
+  --gold:#c99a2e;
+  --navy:#1c2440;
+  --navy-2:#262f54;
+  --shadow: 0 1px 2px rgba(28,36,64,.06), 0 10px 28px -14px rgba(28,36,64,.22);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#15170f;
+    --surface:#1e2118;
+    --surface-2:#262a1e;
+    --ink:#eef0e6;
+    --ink-soft:#aab3a2;
+    --line:#333a2a;
+    --clay:#e08550;
+    --clay-soft:#3a2a1f;
+    --teal:#7fb3a6;
+    --teal-soft:#1f2c28;
+    --gold:#e3b94e;
+    --navy:#0f1326;
+    --navy-2:#171d38;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 30px -14px rgba(0,0,0,.65);
+  }
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Manrope",system-ui,sans-serif;}
+h1,h2,h3{font-family:"Fraunces",Georgia,serif;margin:0;}
+a{color:inherit;}
+.wrap{max-width:920px;margin:0 auto;padding:0 16px 64px;}
+.eyebrow{font-family:"JetBrains Mono",monospace;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;}
+
+/* ---------- hero ---------- */
+.hero{
+  background:linear-gradient(165deg,var(--navy),var(--navy-2));
+  color:#f1ede1;
+  padding:40px 16px 34px;
+  text-align:center;
+  border-radius:0 0 28px 28px;
+  margin-bottom:-18px;
+}
+.hero .ring{
+  width:54px;height:54px;margin:0 auto 14px;border-radius:50%;
+  border:2px solid var(--gold);
+}
+.hero .eyebrow{color:#c8c2a8;}
+.hero h1{font-size:clamp(28px,6vw,38px);font-weight:600;margin-top:10px;letter-spacing:.02em;}
+.hero .dates{margin-top:8px;font-size:13px;color:#c8c2a8;font-family:"JetBrains Mono",monospace;letter-spacing:.04em;}
+.hero .badges{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:16px;}
+.hero .badge{
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);
+  padding:6px 14px;border-radius:100px;font-size:12.5px;font-weight:600;
+  display:flex;align-items:center;gap:6px;
+}
+
+/* ---------- sections ---------- */
+section{margin-top:30px;}
+.section-head{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.section-head h2{font-size:17px;font-weight:700;}
+.section-head .ico{font-size:17px;}
+
+.card{
+  background:var(--surface);border:1px solid var(--line);border-radius:16px;
+  box-shadow:var(--shadow);
+}
+
+/* info grid (lodging / transport) */
+.infogrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media (max-width:620px){.infogrid{grid-template-columns:1fr;}}
+.infocard{padding:16px 18px;}
+.infocard .label{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);}
+.infocard .title{font-family:"Fraunces",serif;font-size:18px;font-weight:600;margin-top:4px;}
+.infocard .sub{font-size:13px;color:var(--ink-soft);margin-top:6px;line-height:1.6;}
+.infocard .row{display:flex;justify-content:space-between;gap:12px;font-size:13px;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);}
+.infocard .row span:first-child{color:var(--ink-soft);}
+.infocard .row span:last-child{font-weight:600;}
+.pill-link{display:inline-block;margin-top:10px;font-size:12px;font-weight:700;padding:5px 12px;border-radius:100px;background:var(--teal-soft);color:var(--teal);text-decoration:none;}
+
+/* quick links */
+.quicklinks{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+@media (max-width:620px){.quicklinks{grid-template-columns:repeat(2,1fr);}}
+.quicklink{
+  background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  padding:16px 10px;text-align:center;text-decoration:none;color:var(--ink);
+  box-shadow:var(--shadow);
+}
+.quicklink .ico{font-size:22px;}
+.quicklink .lbl{display:block;margin-top:8px;font-size:12.5px;font-weight:700;}
+
+/* day overview cards */
+.dayoverview{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media (max-width:620px){.dayoverview{grid-template-columns:1fr;}}
+.dayov{
+  border-radius:16px;padding:18px 18px 16px;color:#fff;box-shadow:var(--shadow);
+  text-decoration:none;display:block;cursor:pointer;
+}
+.dayov.d1{background:linear-gradient(155deg,var(--teal),#1f403b);}
+.dayov.d2{background:linear-gradient(155deg,var(--clay),#974c21);}
+.dayov .dtag{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.06em;opacity:.85;}
+.dayov .dtitle{font-family:"Fraunces",serif;font-size:20px;font-weight:600;margin-top:4px;}
+.dayov ul{margin:12px 0 0;padding-left:18px;font-size:13px;line-height:1.7;opacity:.95;}
+
+/* weather row */
+.weatherrow{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+@media (max-width:480px){.weatherrow{grid-template-columns:1fr;}}
+.wcard{padding:14px 16px;text-align:center;}
+.wcard .wday{font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--ink-soft);}
+.wcard .wicon{font-size:26px;margin:6px 0 2px;}
+.wcard .wtemp{font-family:"Fraunces",serif;font-size:22px;font-weight:600;}
+.wcard .wrain{font-size:12px;color:var(--ink-soft);margin-top:2px;}
+
+/* map section */
+.mapsub{color:var(--ink-soft);font-size:13px;margin:-4px 0 14px;}
+.daytabs{display:flex;gap:6px;background:var(--surface-2);padding:5px;border-radius:12px;margin-bottom:14px;}
+.daytab{flex:1;padding:10px 8px;text-align:center;border-radius:9px;cursor:pointer;font-weight:700;font-size:13.5px;color:var(--ink-soft);background:transparent;border:none;font-family:inherit;}
+.daytab.active{background:var(--surface);color:var(--ink);box-shadow:var(--shadow);}
+.routecard{overflow:hidden;margin-bottom:14px;}
+.routecard iframe{width:100%;height:420px;border:0;display:block;}
+.routemeta{padding:12px 16px;font-size:13px;color:var(--ink-soft);border-top:1px solid var(--line);}
+.routemeta b{color:var(--ink);}
+.stoplist{display:flex;flex-wrap:wrap;margin-bottom:4px;}
+.stopchip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;margin:0 8px 8px 0;border-radius:100px;border:1px solid var(--line);background:var(--surface-2);font-size:12.5px;font-weight:600;color:var(--ink-soft);cursor:pointer;}
+.stopchip.active{background:var(--teal);color:#fff;border-color:var(--teal);}
+.stopchip .n{font-family:"JetBrains Mono",monospace;background:var(--surface);color:var(--ink);border-radius:50%;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;}
+.stopchip.active .n{background:#fff;color:var(--teal);}
+.singlecard{overflow:hidden;margin-top:8px;}
+.singlecard iframe{width:100%;height:320px;border:0;display:block;}
+
+/* day detail timeline */
+.day{display:none;}
+.day.active{display:block;}
+.daymeta{display:flex;justify-content:space-between;align-items:baseline;margin:4px 2px 14px;flex-wrap:wrap;gap:6px;}
+.daymeta h3{font-size:19px;font-weight:600;}
+.daymeta .tag{font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--clay);font-weight:600;}
+.timeline{position:relative;}
+.stop{display:grid;grid-template-columns:50px 1fr;gap:14px;position:relative;}
+.stop:not(:last-child)::before{content:"";position:absolute;left:24px;top:38px;bottom:-14px;width:2px;background:var(--line);}
+.stop .time{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;color:var(--ink-soft);text-align:center;padding-top:14px;}
+.stop .dot{width:11px;height:11px;border-radius:50%;background:var(--teal);margin:0 auto 6px;border:3px solid var(--bg);box-shadow:0 0 0 2px var(--teal);}
+.stop.alt .dot{background:var(--clay);box-shadow:0 0 0 2px var(--clay);}
+.stopcard{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--teal);border-radius:12px;padding:13px 16px 14px;margin-bottom:12px;box-shadow:var(--shadow);}
+.stopcard.alt{border-left-color:var(--clay);}
+.stopcard.plan{border-left-style:dashed;}
+.stopcard h4{font-size:15.5px;font-weight:700;display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0;font-family:"Manrope",sans-serif;}
+.stopcard .badge{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:100px;background:var(--teal-soft);color:var(--teal);}
+.stopcard .badge.alt{background:var(--clay-soft);color:var(--clay);}
+.stopcard p{margin:7px 0 0;font-size:13.3px;line-height:1.6;color:var(--ink-soft);}
+.stopcard .meta-line{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;font-size:12px;color:var(--ink-soft);}
+.stopcard a.maplink{display:inline-flex;align-items:center;gap:5px;margin-top:9px;font-size:12px;font-weight:700;color:var(--teal);text-decoration:none;border-bottom:1px solid currentColor;}
+
+/* checklist */
+.checklist{padding:6px 4px;}
+.chk-item{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line);}
+.chk-item:last-child{border-bottom:none;}
+.chk-item input{margin-top:3px;width:17px;height:17px;accent-color:var(--teal);flex-shrink:0;}
+.chk-item label{font-size:13.5px;line-height:1.5;flex:1;}
+.chk-item label .note{display:block;font-size:11.5px;color:var(--ink-soft);margin-top:2px;}
+.chk-item.done label{text-decoration:line-through;color:var(--ink-soft);}
+.chk-progress{padding:10px 16px;font-size:12px;color:var(--ink-soft);display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);}
+.chk-progress .bar{flex:1;height:6px;background:var(--surface-2);border-radius:4px;margin:0 10px;overflow:hidden;}
+.chk-progress .bar i{display:block;height:100%;background:var(--teal);width:0%;transition:width .2s;}
+
+/* packing grid */
+.packgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media (max-width:620px){.packgrid{grid-template-columns:1fr;}}
+.packcard{padding:0;}
+.packcard .packhead{padding:12px 16px;border-radius:16px 16px 0 0;font-weight:700;font-size:13.5px;color:#fff;display:flex;align-items:center;gap:8px;}
+.packcard .packbody{padding:4px 4px 10px;}
+.pack-add{display:flex;gap:6px;padding:8px 14px 2px;}
+.pack-add input{flex:1;font-size:12.5px;padding:7px 10px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-family:inherit;}
+.pack-add button{font-size:12.5px;font-weight:700;padding:7px 12px;border-radius:8px;border:none;background:var(--teal);color:#fff;cursor:pointer;}
+
+.note{margin-top:0;background:var(--teal-soft);border-radius:14px;padding:14px 16px;font-size:13px;line-height:1.65;}
+.note b{color:var(--teal);}
+.note ul{margin:8px 0 0;padding-left:18px;}
+.note li{margin-bottom:4px;}
+.localnote{font-size:11.5px;color:var(--ink-soft);text-align:center;margin-top:8px;}
+
+footer{margin-top:36px;font-size:12px;color:var(--ink-soft);text-align:center;}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="ring"></div>
+  <div class="eyebrow">YILAN TRIP</div>
+  <h1>宜蘭 兩天一夜</h1>
+  <div class="dates">2026 · 10/17（三）— 10/18（四）</div>
+  <div class="badges">
+    <span class="badge">🏍️ 重機／開車</span>
+    <span class="badge">🛏️ 山杉青旅</span>
+    <span class="badge">🦊 狐狸村</span>
+    <span class="badge">🌃 空ㄟ農場夜景</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <section>
+    <div class="infogrid">
+      <div class="card infocard">
+        <div class="label">住宿</div>
+        <div class="title">山杉青旅 Hostel Sasa</div>
+        <div class="sub">宜蘭縣礁溪鄉十六結路103之37號・不含早餐，Day2 另排礁溪早餐店</div>
+        <div class="row"><span>入住</span><span>10/17（三）</span></div>
+        <div class="row"><span>退房</span><span>10/18（四）早上</span></div>
+        <a class="pill-link" href="https://www.google.com/maps/search/?api=1&query=山杉青旅+礁溪" target="_blank" rel="noopener">📍 開地圖</a>
+      </div>
+      <div class="card infocard">
+        <div class="label">交通</div>
+        <div class="title">重機／開車・視天氣</div>
+        <div class="sub">10/17 陣雨機率 50%，建議起床先看雷達圖再決定；雨天優先開車。</div>
+        <div class="row"><span>路線</span><span>國5雪隧／北宜公路</span></div>
+        <div class="row"><span>車程</span><span>約 1.5–2 hr</span></div>
+        <span class="pill-link" style="background:var(--clay-soft);color:var(--clay);">⛽ 雨衣雨鞋先備好</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><span class="ico">🔗</span><h2>旅途好用連結</h2></div>
+    <div class="quicklinks">
+      <a class="quicklink" href="#map"><span class="ico">🗺️</span><span class="lbl">行程地圖</span></a>
+      <a class="quicklink" href="#day1"><span class="ico">📅</span><span class="lbl">Day 1 行程</span></a>
+      <a class="quicklink" href="#day2"><span class="ico">📅</span><span class="lbl">Day 2 行程</span></a>
+      <a class="quicklink" href="#packing"><span class="ico">🎒</span><span class="lbl">打包清單</span></a>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><span class="ico">📋</span><h2>兩天行程總覽</h2></div>
+    <div class="dayoverview">
+      <a class="dayov d1" href="#day1">
+        <div class="dtag">10/17（三）・陣雨機率 50%</div>
+        <div class="dtitle">Day 1 頭城→礁溪</div>
+        <ul>
+          <li>流水森林餐廳・午餐泡腳</li>
+          <li>山杉青旅・寄放行李</li>
+          <li>礁溪香腸伯・路邊點心</li>
+          <li>空ㄟ農場・夜景晚餐</li>
+        </ul>
+      </a>
+      <a class="dayov d2" href="#day2">
+        <div class="dtag">10/18（四）・多雲時晴</div>
+        <div class="dtitle">Day 2 三星→羅東</div>
+        <ul>
+          <li>山越早點・礁溪早餐</li>
+          <li>宜蘭狐狸村・看狐狸</li>
+          <li>林場肉羹・羅東林業園區</li>
+          <li>Gather食聚咖啡・Allin_roll</li>
+        </ul>
+      </a>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><span class="ico">⛅</span><h2>行程天氣參考</h2></div>
+    <div class="weatherrow">
+      <div class="card wcard">
+        <div class="wday">10/17（三）</div>
+        <div class="wicon">🌧️</div>
+        <div class="wtemp">29°C</div>
+        <div class="wrain">陣雨・降雨機率 50%</div>
+      </div>
+      <div class="card wcard">
+        <div class="wday">10/18（四）</div>
+        <div class="wicon">⛅</div>
+        <div class="wtemp">30°C</div>
+        <div class="wrain">多雲時晴・降雨機率 24%</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="map">
+    <div class="section-head"><span class="ico">🗺️</span><h2>宜蘭地圖路線圖</h2></div>
+    <p class="mapsub">切換 Day 1 / Day 2，地圖會換成對應那天的整天路線，可直接拖拉、縮放、切衛星圖（真正的 Google 地圖）。</p>
+
+    <div class="daytabs" role="tablist">
+      <button class="daytab active" id="tabbtn-1">Day 1 · 頭城→礁溪</button>
+      <button class="daytab" id="tabbtn-2">Day 2 · 三星→羅東</button>
+    </div>
+
+    <div class="card routecard" id="routecard-1">
+      <iframe
+        src="https://maps.google.com/maps?saddr=%E6%B5%81%E6%B0%B4%E6%A3%AE%E6%9E%97%E9%A4%90%E5%BB%B3%E3%80%81%E5%AE%9C%E8%98%AD%E7%B8%A3%E9%A0%AD%E5%9F%8E%E9%8E%AE%E5%AE%9C%E4%B8%89%E8%B7%AF%E4%BA%8C%E6%AE%B5275%E5%B7%B77%E4%B9%8B1%E8%99%9F&daddr=%E5%B1%B1%E6%9D%89%E9%9D%92%E6%97%85%E3%80%81%E5%AE%9C%E8%98%AD%E7%B8%A3%E7%A4%81%E6%BA%AA%E9%84%89%E5%8D%81%E5%85%AD%E7%B5%90%E8%B7%AF103%E4%B9%8B37%E8%99%9F+to:%E7%A4%81%E6%BA%AA%E9%A6%99%E8%85%B8%E4%BC%AF%E3%80%81%E5%AE%9C%E8%98%AD%E7%B8%A3%E7%A4%81%E6%BA%AA%E9%84%89%E4%BA%94%E5%B3%B0%E8%B7%AF+to:%E7%A9%BA%E3%84%9F%E8%BE%B2%E5%A0%B4%E3%80%81%E5%AE%9C%E8%98%AD%E7%B8%A3%E7%A4%81%E6%BA%AA%E9%84%89%E7%99%BD%E9%9B%B2%E6%9D%91%E7%99%BD%E7%9F%B3%E8%85%B3%E8%B7%AF157%E5%B7%B731%E8%99%9F&output=embed"
+        loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      <div class="routemeta"><b>Day 1 順路：</b>流水森林餐廳（頭城）→ 山杉青旅（礁溪，寄放行李）→ 礁溪香腸伯 → 空ㄟ農場（夜景晚餐）。右下角「在 Google 地圖中查看」可開完整版直接導航。</div>
+    </div>
+
+    <div class="card routecard" id="routecard-2" style="display:none;">
+      <iframe
+        src="https://maps.google.com/maps?saddr=%E5%B1%B1%E8%B6%8A%E6%97%A9%E9%BB%9E%E3%80%81%E5%AE%9C%E8%98%AD%E7%B8%A3%E7%A4%81%E6%BA%AA%E9%84%89%E7%A4%81%E6%BA%AA%E8%B7%AF&daddr=%E5%AE%9C%E8%98%AD%E7%8B%90%E7%8B%B8%E6%9D%91%E4%B9%9D%E4%B9%9D%E5%B3%B0%E5%8B%95%E7%89%A9%E6%A8%82%E5%9C%92%E3%80%81%E5%AE%9C%E8%98%AD%E7%B8%A3%E4%B8%89%E6%98%9F%E9%84%89%E8%90%AC%E5%AF%8C%E4%B8%83%E8%B7%AF76%E8%99%9F+to:%E6%9E%97%E5%A0%B4%E8%82%89%E7%BE%B9%E3%80%81%E5%AE%9C%E8%98%AD%E7%B8%A3%E7%BE%85%E6%9D%B1%E9%8E%AE%E4%B8%AD%E6%AD%A3%E5%8C%97%E8%B7%AF109%E8%99%9F+to:%E7%BE%85%E6%9D%B1%E6%9E%97%E6%A5%AD%E6%96%87%E5%8C%96%E5%9C%92%E5%8D%80%E3%80%81%E5%AE%9C%E8%98%AD%E7%B8%A3%E7%BE%85%E6%9D%B1%E9%8E%AE%E4%B8%AD%E6%AD%A3%E5%8C%97%E8%B7%AF118%E8%99%9F+to:Gather%E9%A3%9F%E8%81%9A%E5%92%96%E5%95%A1%E3%80%81%E5%AE%9C%E8%98%AD%E7%B8%A3%E5%93%A1%E5%B1%B1%E9%84%89%E5%B0%9A%E6%B7%B1%E8%B7%AF60%E5%B7%B729%E8%99%9F+to:Allin_roll%E7%94%9F%E4%B9%B3%E6%8D%B2%E3%80%81%E5%AE%9C%E8%98%AD%E7%B8%A3%E7%BE%85%E6%9D%B1%E9%8E%AE%E5%A4%A9%E6%B4%A5%E8%B7%AF52%E8%99%9F&output=embed"
+        loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      <div class="routemeta"><b>Day 2 順路：</b>山越早點（礁溪早餐）→ 宜蘭狐狸村・九九峰動物樂園（三星，看狐狸）→ 林場肉羹（羅東，午餐）→ 羅東林業文化園區（散步）→ Gather食聚咖啡（員山，下午茶）→ Allin_roll生乳捲（羅東，最後取伴手禮）。</div>
+    </div>
+
+    <div class="stoplist" id="stoplist-1">
+      <span class="stopchip active" data-q="流水森林餐廳 宜蘭縣頭城鎮宜三路二段275巷7之1號"><span class="n">1</span>流水森林餐廳</span>
+      <span class="stopchip" data-q="山杉青旅 宜蘭縣礁溪鄉十六結路103之37號"><span class="n">2</span>山杉青旅</span>
+      <span class="stopchip" data-q="礁溪香腸伯 宜蘭縣礁溪鄉五峰路"><span class="n">3</span>礁溪香腸伯</span>
+      <span class="stopchip" data-q="空ㄟ農場 宜蘭縣礁溪鄉白雲村白石腳路157巷31號"><span class="n">4</span>空ㄟ農場</span>
+    </div>
+    <div class="stoplist" id="stoplist-2" style="display:none;">
+      <span class="stopchip active" data-q="山越早點 宜蘭縣礁溪鄉礁溪路"><span class="n">1</span>山越早點</span>
+      <span class="stopchip" data-q="宜蘭狐狸村 九九峰動物樂園 宜蘭縣三星鄉萬富七路76號"><span class="n">2</span>宜蘭狐狸村</span>
+      <span class="stopchip" data-q="林場肉羹 宜蘭縣羅東鎮中正北路109號"><span class="n">3</span>林場肉羹</span>
+      <span class="stopchip" data-q="羅東林業文化園區 宜蘭縣羅東鎮中正北路118號"><span class="n">4</span>林業文化園區</span>
+      <span class="stopchip" data-q="Gather食聚咖啡 宜蘭縣員山鄉尚深路60巷29號"><span class="n">5</span>Gather食聚咖啡</span>
+      <span class="stopchip" data-q="Allin_roll生乳捲 宜蘭縣羅東鎮天津路52號"><span class="n">6</span>Allin_roll生乳捲</span>
+    </div>
+    <div class="card singlecard">
+      <iframe id="singleMap"
+        src="https://maps.google.com/maps?q=%E6%B5%81%E6%B0%B4%E6%A3%AE%E6%9E%97%E9%A4%90%E5%BB%B3%20%E5%AE%9C%E8%98%AD%E7%B8%A3%E9%A0%AD%E5%9F%8E%E9%8E%AE%E5%AE%9C%E4%B8%89%E8%B7%AF%E4%BA%8C%E6%AE%B5275%E5%B7%B77%E4%B9%8B1%E8%99%9F&output=embed"
+        loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+  </section>
+
+  <section id="day1">
+    <div class="section-head"><span class="ico">📅</span><h2>每日行程細節</h2></div>
+
+    <div class="daymeta">
+      <h3>Day 1 — 上路到夜景</h3>
+      <span class="tag">10/17（三）・陣雨機率高</span>
+    </div>
+    <div class="timeline">
+      <div class="stop">
+        <div class="time">早上</div>
+        <div class="stopcard plan">
+          <h4>台北 → 礁溪 <span class="badge">視天氣</span></h4>
+          <p>陣雨機率 50%，建議起床先看一次即時雷達圖：若有雨區覆蓋北宜/雪隧，優先改開車；放晴空檔才騎重機，雨衣雨鞋還是帶著。</p>
+          <div class="meta-line"><span>⏱️ 約 1.5–2 hr</span><span>🛣️ 國5 雪隧 or 北宜公路</span></div>
+        </div>
+      </div>
+      <div class="stop">
+        <div class="time">12:30</div>
+        <div class="stopcard">
+          <h4>流水森林餐廳 <span class="badge">午餐・泡腳</span></h4>
+          <p>頭城山邊溪谷旁的半露天餐廳，邊吃蛤蜊義大利麵邊泡腳消暑，順路安排在進礁溪之前。用餐限時 100 分，每人低消一品，假日建議先電話卡位。</p>
+          <div class="meta-line"><span>📍 宜蘭縣頭城鎮宜三路二段275巷7之1號</span><span>🕒 11:00–20:30</span><span>📞 0916-984480</span></div>
+          <a class="maplink" href="https://www.google.com/maps/search/?api=1&query=流水森林餐廳+頭城" target="_blank" rel="noopener">在 Google 地圖開啟 →</a>
+        </div>
+      </div>
+      <div class="stop">
+        <div class="time">14:00</div>
+        <div class="stopcard">
+          <h4>抵達礁溪・寄放行李</h4>
+          <p>到山杉青旅放行李，附近散步消化一下，順道留點胃口給路邊的礁溪香腸伯。</p>
+          <div class="meta-line"><span>📍 宜蘭縣礁溪鄉十六結路103之37號</span></div>
+          <a class="maplink" href="https://www.google.com/maps/search/?api=1&query=山杉青旅+礁溪" target="_blank" rel="noopener">在 Google 地圖開啟 →</a>
+        </div>
+      </div>
+      <div class="stop">
+        <div class="time">15:00</div>
+        <div class="stopcard plan">
+          <h4>礁溪香腸伯 <span class="badge">路邊點心</span></h4>
+          <p>跑馬古道口旁近 30 年老攤，潤餅皮包大腸包小腸是招牌。假日常排隊，陣雨天攤位可能提早收，建議先電話確認還有沒有開。</p>
+          <div class="meta-line"><span>📍 宜蘭縣礁溪鄉五峰路・跑馬古道口旁</span><span>🕒 10:00–18:00</span><span>📞 0927-066196</span></div>
+        </div>
+      </div>
+      <div class="stop alt">
+        <div class="time">16:00</div>
+        <div class="stopcard alt">
+          <h4>搭接駁車上山 <span class="badge alt">空ㄟ農場</span></h4>
+          <p>礁溪白石腳山區的夜景餐廳，開車/重機無法直接上山，需在山下定點搭免費接駁車。現場候位不預約，用餐限時 2 小時，<b>只收現金</b>，低消 $300/人。趁天色還亮時先上山排候位，等天黑看蘭陽平原夜景＋吃窯烤 Pizza。</p>
+          <div class="meta-line"><span>📍 宜蘭縣礁溪鄉白雲村白石腳路157巷31號</span><span>🕒 週三 15:00–23:00</span><span>💰 低消 $300/人＋10%</span></div>
+          <a class="maplink" href="https://www.google.com/maps/search/?api=1&query=空ㄟ農場" target="_blank" rel="noopener">在 Google 地圖開啟 →</a>
+        </div>
+      </div>
+      <div class="stop">
+        <div class="time">晚上</div>
+        <div class="stopcard">
+          <h4>下山回山杉青旅休息</h4>
+          <p>搭接駁車下山，回礁溪住宿洗溫泉好好睡，為明天的狐狸行程儲備體力。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="day2">
+    <div class="daymeta">
+      <h3>Day 2 — 看狐狸、吃回台北</h3>
+      <span class="tag">10/18（四）・多雲時晴</span>
+    </div>
+    <div class="timeline">
+      <div class="stop">
+        <div class="time">08:00</div>
+        <div class="stopcard">
+          <h4>山越早點 <span class="badge">簡單吃</span></h4>
+          <p>青旅沒附早餐，先在礁溪吃點在地早餐墊胃再上路。蛋餅、鍋貼、飯糰都有，吃完直接退房出發。</p>
+          <div class="meta-line"><span>📍 宜蘭縣礁溪鄉礁溪路</span><span>🕒 06:00–13:00（週四公休）</span></div>
+          <a class="maplink" href="https://www.google.com/maps/search/?api=1&query=山越早點+礁溪" target="_blank" rel="noopener">在 Google 地圖開啟 →</a>
+        </div>
+      </div>
+      <div class="stop">
+        <div class="time">08:40</div>
+        <div class="stopcard">
+          <h4>退房，礁溪 → 三星</h4>
+          <p>吃完早餐退房，開車/騎車往三星鄉，車程約 25–30 分。天氣轉好，戶外行程都可以放心排。</p>
+          <div class="meta-line"><span>⏱️ 約 25–30 min</span></div>
+        </div>
+      </div>
+      <div class="stop alt">
+        <div class="time">09:30</div>
+        <div class="stopcard alt">
+          <h4>宜蘭狐狸村（九九峰動物樂園） <span class="badge alt">看狐狸</span></h4>
+          <p>白狐、赤狐都在這裡零距離互動，還有土撥鼠、鵜鶘餵食、樹懶餐廳，親子跟大人都好拍。全年無休，開園後直接進場，不用搶場次。</p>
+          <div class="meta-line"><span>📍 宜蘭縣三星鄉萬富七路76號</span><span>🕒 09:00–17:30</span><span>🎫 全票$350／2–4歲$100／65+$250</span></div>
+          <a class="maplink" href="https://www.google.com/maps/search/?api=1&query=宜蘭狐狸村+九九峰動物樂園" target="_blank" rel="noopener">在 Google 地圖開啟 →</a>
+        </div>
+      </div>
+      <div class="stop">
+        <div class="time">12:00</div>
+        <div class="stopcard">
+          <h4>林場肉羹 <span class="badge">在地午餐</span></h4>
+          <p>羅東超過 50 年的在地老店，就在羅東林業文化園區旁，肉羹麵／羹湯／肉羹飯都銅板價，吃完直接散步去隔壁園區逛逛。</p>
+          <div class="meta-line"><span>📍 宜蘭縣羅東鎮中正北路109號</span><span>🕒 07:00–17:30（週三公休）</span><span>📞 03-9552736</span></div>
+          <a class="maplink" href="https://www.google.com/maps/search/?api=1&query=林場肉羹+羅東" target="_blank" rel="noopener">在 Google 地圖開啟 →</a>
+        </div>
+      </div>
+      <div class="stop">
+        <div class="time">13:00</div>
+        <div class="stopcard">
+          <h4>羅東林業文化園區 <span class="badge">散步逛逛</span></h4>
+          <p>日式老屋、舊鐵道、貯木池都保留下來，免門票、有遮蔭好散步，吃飽飯消化剛好，旁邊走到羅東文化工場也不遠。</p>
+          <div class="meta-line"><span>📍 宜蘭縣羅東鎮中正北路118號</span><span>🕒 戶外全天開放</span></div>
+          <a class="maplink" href="https://www.google.com/maps/search/?api=1&query=羅東林業文化園區" target="_blank" rel="noopener">在 Google 地圖開啟 →</a>
+        </div>
+      </div>
+      <div class="stop">
+        <div class="time">14:30</div>
+        <div class="stopcard plan">
+          <h4>羅東甜點・路過三選一 <span class="badge">彈性</span></h4>
+          <p>三家都在羅東市區、彼此距離很近，看當下想吃什麼挑一家就好，不用都跑：<b>福鼎冰淇淋廠</b>吃手工冰、<b>NiNôo Café</b>坐下來喝咖啡、<b>玉圓堂</b>外帶一杯黑糖粉圓鮮奶上路。</p>
+          <div class="meta-line"><span>📍 福鼎冰淇淋廠・光榮路230巷80號</span><span>📍 NiNôo Café・興東南路228巷20號</span><span>📍 玉圓堂・公正路107號</span></div>
+        </div>
+      </div>
+      <div class="stop alt">
+        <div class="time">15:00</div>
+        <div class="stopcard alt">
+          <h4>Gather 食聚咖啡 <span class="badge alt">下午茶收尾</span></h4>
+          <p>宜蘭最知名的水果千層蛋糕，2025年底搬到員山新店面，停車比舊址方便。從羅東過去約 15–20 分，當作這趟唯一的正式下午茶。</p>
+          <div class="meta-line"><span>📍 宜蘭縣員山鄉尚深路60巷29號</span><span>🕒 10:00–17:00（週一二公休）</span><span>📞 03-9385868</span></div>
+          <a class="maplink" href="https://www.google.com/maps/search/?api=1&query=Gather食聚咖啡+員山" target="_blank" rel="noopener">在 Google 地圖開啟 →</a>
+        </div>
+      </div>
+      <div class="stop">
+        <div class="time">16:15</div>
+        <div class="stopcard plan">
+          <h4>Allin_roll 生乳捲 <span class="badge">最後一站・伴手禮</span></h4>
+          <p>放在最後拿，當伴手禮保冷時間最短、直接帶上車回台北。<b>只能私訊 IG 預約再現場取貨</b>，記得提早幾天先敲好時間。從員山繞回羅東約 15–20 分，是這天唯一的小繞路，拿完直接上路。</p>
+          <div class="meta-line"><span>📍 宜蘭縣羅東鎮天津路52號2樓</span><span>🕒 取貨 14:00–21:00（需先預約）</span></div>
+        </div>
+      </div>
+      <div class="stop">
+        <div class="time">17:00</div>
+        <div class="stopcard plan">
+          <h4>踏上歸途</h4>
+          <p>羅東上國5／雪隧方向都不遠，拿完生乳捲就可以直接出發回台北，避開太晚的山路夜騎。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="note">
+    <b>給重機/開車的小提醒</b>
+    <ul>
+      <li>17 日降雨機率 50%，出發前務必再看一次即時雷達圖，雨天建議改開車；行李先備好雨衣雨鞋。</li>
+      <li>空ㄟ農場只收現金、不能自行開車上山，記得先備零錢和留時間候位。</li>
+      <li>礁溪香腸伯是路邊攤，雨天可能提早收攤，建議先電話確認。</li>
+      <li>Allin_roll 生乳捲要先私訊 IG 預約，沒預約可能撲空，記得出發前幾天就先敲時間。</li>
+    </ul>
+  </div>
+
+  <section>
+    <div class="section-head"><span class="ico">✅</span><h2>出發前 Check List</h2></div>
+    <div class="card checklist">
+      <div class="chk-progress"><span>完成進度</span><div class="bar"><i id="chkBar"></i></div><span id="chkCount">0 / 0</span></div>
+      <div id="chkList"></div>
+    </div>
+    <p class="localnote">勾選狀態只存在你自己的瀏覽器裡（localStorage），不會同步給朋友——需要跟朋友共用的清單可以用一起共編的 Claude Docs 文件。</p>
+  </section>
+
+  <section id="packing">
+    <div class="section-head"><span class="ico">🎒</span><h2>打包清單</h2></div>
+    <div class="packgrid" id="packGrid"></div>
+    <p class="localnote">打包清單一樣只存在本機瀏覽器，換裝置或清快取會不見；需要共用版可以用 Claude Docs 文件追蹤。</p>
+  </section>
+
+  <footer>行程與地址資訊於 2026/10/06–07 查詢整理，出發前請再次確認最新營業公告。本機檔案開啟時仍需連網才能載入 Google 地圖。</footer>
+</div>
+
+<script>
+(function(){
+  // day tabs (map + timeline, sync together)
+  var dayTabs = document.querySelectorAll(".daytab");
+  var routecards = { 1: document.getElementById("routecard-1"), 2: document.getElementById("routecard-2") };
+  var stoplists = { 1: document.getElementById("stoplist-1"), 2: document.getElementById("stoplist-2") };
+  var singleMap = document.getElementById("singleMap");
+
+  function selectDay(i){
+    dayTabs.forEach(function(t, idx){ t.classList.toggle("active", idx === i - 1); });
+    Object.keys(routecards).forEach(function(k){
+      var active = (k === String(i));
+      routecards[k].style.display = active ? "" : "none";
+      stoplists[k].style.display = active ? "flex" : "none";
+    });
+    var firstChip = stoplists[i].querySelector(".stopchip");
+    if(firstChip){
+      stoplists[i].querySelectorAll(".stopchip").forEach(function(c){ c.classList.remove("active"); });
+      firstChip.classList.add("active");
+      singleMap.src = "https://maps.google.com/maps?q=" + encodeURIComponent(firstChip.getAttribute("data-q")) + "&output=embed";
+    }
+  }
+  dayTabs.forEach(function(btn, idx){ btn.addEventListener("click", function(){ selectDay(idx + 1); }); });
+  document.querySelectorAll(".stopchip").forEach(function(chip){
+    chip.addEventListener("click", function(){
+      var parent = chip.closest(".stoplist");
+      parent.querySelectorAll(".stopchip").forEach(function(c){ c.classList.remove("active"); });
+      chip.classList.add("active");
+      singleMap.src = "https://maps.google.com/maps?q=" + encodeURIComponent(chip.getAttribute("data-q")) + "&output=embed";
+    });
+  });
+  selectDay(1);
+
+  // checklist
+  var checklistItems = [
+    {id:"c1", label:"確認山杉青旅訂房", note:"Email / 訂房平台截圖存好"},
+    {id:"c2", label:"Allin_roll 生乳捲已私訊 IG 預約取貨時間"},
+    {id:"c3", label:"準備足夠現金", note:"空ㄟ農場只收現金，低消 $300/人"},
+    {id:"c4", label:"雨衣、雨鞋（重機用）"},
+    {id:"c5", label:"安全帽、手套、防風鏡片"},
+    {id:"c6", label:"行動電源、車充線"},
+    {id:"c7", label:"駕照、行照、強制險影本"},
+    {id:"c8", label:"防曬乳、個人藥品"},
+    {id:"c9", label:"確認 10/17 即時天氣雷達圖，決定騎車或開車"}
+  ];
+  var chkList = document.getElementById("chkList");
+  var chkBar = document.getElementById("chkBar");
+  var chkCount = document.getElementById("chkCount");
+  var chkState = {};
+  try{ chkState = JSON.parse(localStorage.getItem("yilan-checklist") || "{}"); }catch(e){ chkState = {}; }
+
+  function renderChecklist(){
+    chkList.innerHTML = "";
+    checklistItems.forEach(function(item){
+      var row = document.createElement("div");
+      row.className = "chk-item" + (chkState[item.id] ? " done" : "");
+      var noteHtml = item.note ? '<span class="note">' + item.note + '</span>' : "";
+      row.innerHTML = '<input type="checkbox" id="chk-' + item.id + '"' + (chkState[item.id] ? " checked" : "") + '>' +
+        '<label for="chk-' + item.id + '">' + item.label + noteHtml + '</label>';
+      row.querySelector("input").addEventListener("change", function(e){
+        chkState[item.id] = e.target.checked;
+        try{ localStorage.setItem("yilan-checklist", JSON.stringify(chkState)); }catch(err){}
+        renderChecklist();
+      });
+      chkList.appendChild(row);
+    });
+    var done = checklistItems.filter(function(i){ return chkState[i.id]; }).length;
+    chkBar.style.width = (checklistItems.length ? (done / checklistItems.length * 100) : 0) + "%";
+    chkCount.textContent = done + " / " + checklistItems.length;
+  }
+  renderChecklist();
+
+  // packing list
+  var packCategories = [
+    {id:"docs", name:"證件財物", color:"#b65a3a", items:["駕照 / 行照", "強制險影本", "身分證", "現金（空ㄟ農場用）", "信用卡"]},
+    {id:"riding", name:"騎乘裝備", color:"#2f5a53", items:["安全帽", "手套", "雨衣雨褲", "防風鏡片 / 口罩"]},
+    {id:"clothes", name:"衣物", color:"#7a6a9a", items:["排汗衣", "保暖外套（早晚溫差大）", "換洗衣物、襪子"]},
+    {id:"care", name:"盥洗保養", color:"#3a7a5a", items:["防曬乳", "牙刷牙膏", "毛巾（溫泉用）", "個人藥品"]},
+    {id:"electronics", name:"3C用品", color:"#b08a2e", items:["手機充電線", "行動電源", "車充 / 車架"]},
+    {id:"extras", name:"其他", color:"#5a6a7a", items:["伴手禮袋子（裝生乳捲）", "垃圾袋"]}
+  ];
+  var packGrid = document.getElementById("packGrid");
+  var packState = {};
+  try{ packState = JSON.parse(localStorage.getItem("yilan-packing") || "{}"); }catch(e){ packState = {}; }
+  var packExtra = {};
+  try{ packExtra = JSON.parse(localStorage.getItem("yilan-packing-extra") || "{}"); }catch(e){ packExtra = {}; }
+
+  function savePackState(){
+    try{ localStorage.setItem("yilan-packing", JSON.stringify(packState)); }catch(e){}
+    try{ localStorage.setItem("yilan-packing-extra", JSON.stringify(packExtra)); }catch(e){}
+  }
+
+  function renderPacking(){
+    packGrid.innerHTML = "";
+    packCategories.forEach(function(cat){
+      var card = document.createElement("div");
+      card.className = "card packcard";
+      var head = document.createElement("div");
+      head.className = "packhead";
+      head.style.background = cat.color;
+      head.textContent = cat.name;
+      card.appendChild(head);
+      var body = document.createElement("div");
+      body.className = "packbody";
+
+      var allItems = cat.items.concat(packExtra[cat.id] || []);
+      allItems.forEach(function(label, idx){
+        var key = cat.id + "-" + idx + "-" + label;
+        var row = document.createElement("div");
+        row.className = "chk-item" + (packState[key] ? " done" : "");
+        row.innerHTML = '<input type="checkbox" id="pk-' + cat.id + '-' + idx + '"' + (packState[key] ? " checked" : "") + '>' +
+          '<label for="pk-' + cat.id + '-' + idx + '">' + label + '</label>';
+        row.querySelector("input").addEventListener("change", function(e){
+          packState[key] = e.target.checked;
+          savePackState();
+          renderPacking();
+        });
+        body.appendChild(row);
+      });
+
+      var addRow = document.createElement("div");
+      addRow.className = "pack-add";
+      addRow.innerHTML = '<input type="text" placeholder="新增項目…"><button type="button">＋</button>';
+      var input = addRow.querySelector("input");
+      var btn = addRow.querySelector("button");
+      function addItem(){
+        var v = input.value.trim();
+        if(!v) return;
+        if(!packExtra[cat.id]) packExtra[cat.id] = [];
+        packExtra[cat.id].push(v);
+        savePackState();
+        renderPacking();
+      }
+      btn.addEventListener("click", addItem);
+      input.addEventListener("keydown", function(e){ if(e.key === "Enter") addItem(); });
+      body.appendChild(addRow);
+
+      card.appendChild(body);
+      packGrid.appendChild(card);
+    });
+  }
+  renderPacking();
+})();
+</script>
+</body>
+</html>

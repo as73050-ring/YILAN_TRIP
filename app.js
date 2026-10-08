@@ -42,12 +42,15 @@ function loadData(isPoll){
         // Google Sheet 是空的，第一次用 seed 資料種進去
         return saveData(SEED_DATA, true);
       }
-      // 舊資料可能是在加入 checklist/packing/note 功能之前存的，缺欄位就補上預設值
-      var needsMigration = !json.checklist || !json.packing || !json.note;
+      // 舊資料可能是在加入 checklist/packing/note 功能之前存的，缺欄位或是空陣列就補上預設值
+      var needsMigration =
+        !json.checklist || !json.checklist.length ||
+        !json.packing || !json.packing.length ||
+        !json.note;
       if(needsMigration){
-        json.checklist = json.checklist || SEED_DATA.checklist;
-        json.packing = json.packing || SEED_DATA.packing;
-        json.note = json.note || SEED_DATA.note;
+        if(!json.checklist || !json.checklist.length){ json.checklist = SEED_DATA.checklist; }
+        if(!json.packing || !json.packing.length){ json.packing = SEED_DATA.packing; }
+        if(!json.note){ json.note = SEED_DATA.note; }
       }
       if(editingCount > 0 && isPoll){
         pendingData = json;
@@ -86,6 +89,17 @@ function saveData(newData, skipReload, activityLabel){
 }
 
 // ---------- 操作紀錄（獨立一份，寫入失敗絕不影響主要存檔或畫面） ----------
+function detectDevice(){
+  var ua = (navigator && navigator.userAgent) || "";
+  if(/iPad/.test(ua)) return "iPad";
+  if(/iPhone/.test(ua)) return "iPhone";
+  if(/Android/.test(ua)) return /Mobile/.test(ua) ? "Android 手機" : "Android 平板";
+  if(/Macintosh/.test(ua)) return "Mac";
+  if(/Windows/.test(ua)) return "Windows";
+  if(/Linux/.test(ua)) return "Linux";
+  return "未知裝置";
+}
+
 function logActivity(action){
   if(!API_URL) return;
   fetch(API_URL, {
@@ -94,6 +108,7 @@ function logActivity(action){
       __action: "log_activity",
       ip: clientIp,
       ua: (navigator && navigator.userAgent) || "unknown",
+      device: detectDevice(),
       action: action,
       time: new Date().toISOString()
     })
@@ -703,7 +718,8 @@ document.addEventListener("DOMContentLoaded", function(){
   fetch("https://api.ipify.org?format=json")
     .then(function(r){ return r.json(); })
     .then(function(res){ if(res && res.ip){ clientIp = res.ip; } })
-    .catch(function(){ /* 查不到就維持 unknown，不影響其他功能 */ });
+    .catch(function(){ /* 查不到就維持 unknown，不影響其他功能 */ })
+    .then(function(){ logActivity("進入網頁"); });
 
   byId("tabbtn-day1").addEventListener("click", function(){ showDayTab("day1"); });
   byId("tabbtn-day2").addEventListener("click", function(){ showDayTab("day2"); });

@@ -8,6 +8,7 @@ var DATA = null;          // 目前畫面上顯示的資料
 var pendingData = null;   // 輪詢抓到但因為正在編輯而還沒套用的資料
 var editingCount = 0;     // 目前有幾個編輯面板是開著的
 var currentDayTab = "day1";
+var clientIp = "unknown"; // 前端自行查詢的公開 IP，僅供操作紀錄參考，使用者可偽造
 
 // ---------- 小工具 ----------
 function escapeHtml(s){
@@ -41,6 +42,13 @@ function loadData(isPoll){
         // Google Sheet 是空的，第一次用 seed 資料種進去
         return saveData(SEED_DATA, true);
       }
+      // 舊資料可能是在加入 checklist/packing/note 功能之前存的，缺欄位就補上預設值
+      var needsMigration = !json.checklist || !json.packing || !json.note;
+      if(needsMigration){
+        json.checklist = json.checklist || SEED_DATA.checklist;
+        json.packing = json.packing || SEED_DATA.packing;
+        json.note = json.note || SEED_DATA.note;
+      }
       if(editingCount > 0 && isPoll){
         pendingData = json;
         byId("syncBanner").hidden = false;
@@ -49,6 +57,7 @@ function loadData(isPoll){
         pendingData = null;
         byId("syncBanner").hidden = true;
         renderAll();
+        if(needsMigration && !isPoll){ saveData(json, true); }
       }
     })
     .catch(function(err){
@@ -57,7 +66,7 @@ function loadData(isPoll){
     });
 }
 
-function saveData(newData, skipReload){
+function saveData(newData, skipReload, activityLabel){
   DATA = newData;
   if(!API_URL){
     renderAll();
@@ -67,12 +76,28 @@ function saveData(newData, skipReload){
     .then(function(r){ return r.json(); })
     .then(function(res){
       if(!res || !res.ok){ console.error("儲存失敗", res); alert("儲存失敗，請稍後再試一次"); }
+      else if(activityLabel){ logActivity(activityLabel); }
       if(!skipReload){ renderAll(); }
     })
     .catch(function(err){
       console.error("儲存失敗", err);
       alert("儲存失敗，請確認網路連線");
     });
+}
+
+// ---------- 操作紀錄（獨立一份，寫入失敗絕不影響主要存檔或畫面） ----------
+function logActivity(action){
+  if(!API_URL) return;
+  fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      __action: "log_activity",
+      ip: clientIp,
+      ua: (navigator && navigator.userAgent) || "unknown",
+      action: action,
+      time: new Date().toISOString()
+    })
+  }).catch(function(){ /* 紀錄失敗就算了，不影響使用者 */ });
 }
 
 // ---------- render：整體 ----------
@@ -138,7 +163,7 @@ function renderInfoCard(key, container, linkLabel){
     };
     if(key === "lodging"){ next.info[key].mapQuery = editEl.querySelector(".f-mapq").value; }
     editingCount = Math.max(0, editingCount - 1);
-    saveData(next);
+    saveData(next, false, "編輯" + container.dataset.label + "卡片");
   });
 }
 
@@ -179,7 +204,7 @@ function renderWeather(){
         note: editEl.querySelector(".f-note").value
       };
       editingCount = Math.max(0, editingCount - 1);
-      saveData(next);
+      saveData(next, false, "編輯天氣：" + next.weather[i].day);
     });
   });
 }
@@ -341,7 +366,7 @@ function renderDay(key){
       next.days[key].label = metaEdit.querySelector(".f-label").value;
       next.days[key].tag = metaEdit.querySelector(".f-tag").value;
       editingCount = Math.max(0, editingCount - 1);
-      saveData(next);
+      saveData(next, false, "編輯 " + (key === "day1" ? "Day1" : "Day2") + " 標題/標籤");
     });
   }
 
@@ -366,7 +391,7 @@ function renderDay(key){
       if(!confirm('確定要刪除「' + stop.name + '」嗎？')) return;
       var next = JSON.parse(JSON.stringify(DATA));
       next.days[key].stops = next.days[key].stops.filter(function(s){ return s.id !== id; });
-      saveData(next);
+      saveData(next, false, "刪除地點：" + stop.name);
     });
     wireSearchBox(editEl, function(picked, typedQuery){
       editEl.querySelector(".f-address").value = picked.display_name;
@@ -392,7 +417,7 @@ function renderDay(key){
         extra: extraText ? extraText.split("｜").map(function(s){ return s.trim(); }).filter(Boolean) : []
       };
       editingCount = Math.max(0, editingCount - 1);
-      saveData(next);
+      saveData(next, false, "編輯地點：" + list[idx].name);
     });
   });
 
@@ -407,7 +432,7 @@ function renderDay(key){
         var byIdMap = {};
         next.days[key].stops.forEach(function(s){ byIdMap[s.id] = s; });
         next.days[key].stops = ids.map(function(id){ return byIdMap[id]; });
-        saveData(next);
+        saveData(next, false, "拖曳排序：" + (key === "day1" ? "Day1" : "Day2"));
       }
     });
   }
@@ -445,7 +470,7 @@ function wireAddStopForm(key){
     next.days[key].stops.push(stop);
     form.querySelectorAll("input, textarea").forEach(function(i){ i.value = ""; });
     form.querySelector(".f-badgeType").value = "normal";
-    saveData(next);
+    saveData(next, false, "新增地點：" + name);
   });
 }
 
@@ -472,7 +497,7 @@ function renderNote(){
     var items = editEl.querySelector(".f-items").value.split("\n").map(function(s){ return s.trim(); }).filter(Boolean);
     next.note = { title: editEl.querySelector(".f-title").value, items: items };
     editingCount = Math.max(0, editingCount - 1);
-    saveData(next);
+    saveData(next, false, "編輯提醒清單");
   });
   editEl.querySelector('[data-act="suggest"]').addEventListener("click", function(){
     if(!API_URL){
@@ -493,6 +518,80 @@ function renderNote(){
       .catch(function(){
         statusEl.textContent = "⚠️ 連線失敗，請稍後再試。";
       });
+  });
+}
+
+// ---------- 出發前 Check List（存在共用的 Google Sheet，不再是 localStorage） ----------
+function renderChecklist(){
+  var list = DATA.checklist || [];
+  var chkList = byId("chkList");
+  chkList.innerHTML = list.map(function(item){
+    var noteHtml = item.note ? '<span class="note">' + escapeHtml(item.note) + "</span>" : "";
+    return '<div class="chk-item' + (item.checked ? " done" : "") + '" data-id="' + item.id + '">' +
+      '<input type="checkbox" id="chk-' + item.id + '"' + (item.checked ? " checked" : "") + '>' +
+      '<label for="chk-' + item.id + '">' + escapeHtml(item.label) + noteHtml + "</label>" +
+    "</div>";
+  }).join("");
+  chkList.querySelectorAll(".chk-item").forEach(function(row){
+    var id = row.dataset.id;
+    row.querySelector("input").addEventListener("change", function(e){
+      var next = JSON.parse(JSON.stringify(DATA));
+      var item = next.checklist.filter(function(i){ return i.id === id; })[0];
+      if(!item) return;
+      item.checked = e.target.checked;
+      saveData(next, false, "勾選清單：" + item.label + "（" + (item.checked ? "完成" : "取消") + "）");
+    });
+  });
+  var done = list.filter(function(i){ return i.checked; }).length;
+  byId("chkBar").style.width = (list.length ? (done / list.length * 100) : 0) + "%";
+  byId("chkCount").textContent = done + " / " + list.length;
+}
+
+// ---------- 打包清單（存在共用的 Google Sheet） ----------
+function renderPacking(){
+  var cats = DATA.packing || [];
+  var packGrid = byId("packGrid");
+  packGrid.innerHTML = cats.map(function(cat){
+    var itemsHtml = cat.items.map(function(item){
+      return '<div class="chk-item' + (item.checked ? " done" : "") + '" data-cat="' + cat.id + '" data-id="' + item.id + '">' +
+        '<input type="checkbox" id="pk-' + item.id + '"' + (item.checked ? " checked" : "") + '>' +
+        '<label for="pk-' + item.id + '">' + escapeHtml(item.label) + "</label>" +
+      "</div>";
+    }).join("");
+    return '<div class="card packcard" data-cat="' + cat.id + '">' +
+      '<div class="packhead" style="background:' + cat.color + '">' + escapeHtml(cat.name) + "</div>" +
+      '<div class="packbody">' + itemsHtml +
+        '<div class="pack-add"><input type="text" placeholder="新增項目…"><button type="button">＋</button></div>' +
+      "</div>" +
+    "</div>";
+  }).join("");
+
+  packGrid.querySelectorAll(".chk-item").forEach(function(row){
+    var catId = row.dataset.cat, id = row.dataset.id;
+    row.querySelector("input").addEventListener("change", function(e){
+      var next = JSON.parse(JSON.stringify(DATA));
+      var cat = next.packing.filter(function(c){ return c.id === catId; })[0];
+      var item = cat && cat.items.filter(function(i){ return i.id === id; })[0];
+      if(!item) return;
+      item.checked = e.target.checked;
+      saveData(next, false, "打包清單勾選：" + item.label + "（" + (item.checked ? "完成" : "取消") + "）");
+    });
+  });
+  packGrid.querySelectorAll(".packcard").forEach(function(card){
+    var catId = card.dataset.cat;
+    var input = card.querySelector(".pack-add input");
+    var btn = card.querySelector(".pack-add button");
+    function addItem(){
+      var v = input.value.trim();
+      if(!v) return;
+      var next = JSON.parse(JSON.stringify(DATA));
+      var cat = next.packing.filter(function(c){ return c.id === catId; })[0];
+      if(!cat) return;
+      cat.items.push({ id: catId + "-" + uid(), label: v, checked: false });
+      saveData(next, false, "新增打包項目：" + v);
+    }
+    btn.addEventListener("click", addItem);
+    input.addEventListener("keydown", function(e){ if(e.key === "Enter") addItem(); });
   });
 }
 
@@ -597,10 +696,15 @@ function closeMapModal(){
 }
 
 var _origRenderAll = renderAll;
-renderAll = function(){ _origRenderAll(); renderNote(); };
+renderAll = function(){ _origRenderAll(); renderNote(); renderChecklist(); renderPacking(); };
 
 // ---------- 啟動 ----------
 document.addEventListener("DOMContentLoaded", function(){
+  fetch("https://api.ipify.org?format=json")
+    .then(function(r){ return r.json(); })
+    .then(function(res){ if(res && res.ip){ clientIp = res.ip; } })
+    .catch(function(){ /* 查不到就維持 unknown，不影響其他功能 */ });
+
   byId("tabbtn-day1").addEventListener("click", function(){ showDayTab("day1"); });
   byId("tabbtn-day2").addEventListener("click", function(){ showDayTab("day2"); });
   byId("syncRefreshBtn").addEventListener("click", function(){

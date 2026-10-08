@@ -378,13 +378,13 @@ footer{margin-top:36px;font-size:12px;color:var(--ink-soft);text-align:center;}
       <div class="chk-progress"><span>完成進度</span><div class="bar"><i id="chkBar"></i></div><span id="chkCount">0 / 0</span></div>
       <div id="chkList"></div>
     </div>
-    <p class="localnote">勾選狀態只存在你自己的瀏覽器裡（localStorage），不會同步給朋友。</p>
+    <p class="localnote">勾選狀態會存進共用的 Google Sheet，跟其他地點編輯一樣，所有人打開都看得到最新狀態。</p>
   </section>
 
   <section id="packing">
     <div class="section-head"><span class="ico">🎒</span><h2>打包清單</h2></div>
     <div class="packgrid" id="packGrid"></div>
-    <p class="localnote">打包清單一樣只存在本機瀏覽器，換裝置或清快取會不見。</p>
+    <p class="localnote">打包清單一樣是共用的，勾選或新增項目所有人都看得到。</p>
   </section>
 
   <footer>行程與地址資訊於 2026/10/06–07 查詢整理，出發前請再次確認最新營業公告。地點/順序可由任何有連結的人編輯，修改後最多 <span id="pollSecLabel">25</span> 秒內其他人會看到。</footer>
@@ -411,118 +411,5 @@ footer{margin-top:36px;font-size:12px;color:var(--ink-soft);text-align:center;}
 <script src="config.js"></script>
 <script src="seed.js"></script>
 <script src="app.js"></script>
-<script>
-(function(){
-  // checklist（純本機 localStorage，跟 Google Sheet 無關）
-  var checklistItems = [
-    {id:"c1", label:"確認山杉青旅訂房", note:"Email / 訂房平台截圖存好"},
-    {id:"c2", label:"Allin_roll 生乳捲已私訊 IG 預約取貨時間"},
-    {id:"c3", label:"準備足夠現金", note:"空ㄟ農場只收現金，低消 $300/人"},
-    {id:"c4", label:"雨衣、雨鞋（重機用）"},
-    {id:"c5", label:"安全帽、手套、防風鏡片"},
-    {id:"c6", label:"行動電源、車充線"},
-    {id:"c7", label:"駕照、行照、強制險影本"},
-    {id:"c8", label:"防曬乳、個人藥品"},
-    {id:"c9", label:"確認 10/17 即時天氣雷達圖，決定騎車或開車"}
-  ];
-  var chkList = document.getElementById("chkList");
-  var chkBar = document.getElementById("chkBar");
-  var chkCount = document.getElementById("chkCount");
-  var chkState = {};
-  try{ chkState = JSON.parse(localStorage.getItem("yilan-checklist") || "{}"); }catch(e){ chkState = {}; }
-
-  function renderChecklist(){
-    chkList.innerHTML = "";
-    checklistItems.forEach(function(item){
-      var row = document.createElement("div");
-      row.className = "chk-item" + (chkState[item.id] ? " done" : "");
-      var noteHtml = item.note ? '<span class="note">' + item.note + '</span>' : "";
-      row.innerHTML = '<input type="checkbox" id="chk-' + item.id + '"' + (chkState[item.id] ? " checked" : "") + '>' +
-        '<label for="chk-' + item.id + '">' + item.label + noteHtml + '</label>';
-      row.querySelector("input").addEventListener("change", function(e){
-        chkState[item.id] = e.target.checked;
-        try{ localStorage.setItem("yilan-checklist", JSON.stringify(chkState)); }catch(err){}
-        renderChecklist();
-      });
-      chkList.appendChild(row);
-    });
-    var done = checklistItems.filter(function(i){ return chkState[i.id]; }).length;
-    chkBar.style.width = (checklistItems.length ? (done / checklistItems.length * 100) : 0) + "%";
-    chkCount.textContent = done + " / " + checklistItems.length;
-  }
-  renderChecklist();
-
-  // packing list（純本機 localStorage）
-  var packCategories = [
-    {id:"docs", name:"證件財物", color:"#b65a3a", items:["駕照 / 行照", "強制險影本", "身分證", "現金（空ㄟ農場用）", "信用卡"]},
-    {id:"riding", name:"騎乘裝備", color:"#2f5a53", items:["安全帽", "手套", "雨衣雨褲", "防風鏡片 / 口罩"]},
-    {id:"clothes", name:"衣物", color:"#7a6a9a", items:["排汗衣", "保暖外套（早晚溫差大）", "換洗衣物、襪子"]},
-    {id:"care", name:"盥洗保養", color:"#3a7a5a", items:["防曬乳", "牙刷牙膏", "毛巾（溫泉用）", "個人藥品"]},
-    {id:"electronics", name:"3C用品", color:"#b08a2e", items:["手機充電線", "行動電源", "車充 / 車架"]},
-    {id:"extras", name:"其他", color:"#5a6a7a", items:["伴手禮袋子（裝生乳捲）", "垃圾袋"]}
-  ];
-  var packGrid = document.getElementById("packGrid");
-  var packState = {};
-  try{ packState = JSON.parse(localStorage.getItem("yilan-packing") || "{}"); }catch(e){ packState = {}; }
-  var packExtra = {};
-  try{ packExtra = JSON.parse(localStorage.getItem("yilan-packing-extra") || "{}"); }catch(e){ packExtra = {}; }
-
-  function savePackState(){
-    try{ localStorage.setItem("yilan-packing", JSON.stringify(packState)); }catch(e){}
-    try{ localStorage.setItem("yilan-packing-extra", JSON.stringify(packExtra)); }catch(e){}
-  }
-
-  function renderPacking(){
-    packGrid.innerHTML = "";
-    packCategories.forEach(function(cat){
-      var card = document.createElement("div");
-      card.className = "card packcard";
-      var head = document.createElement("div");
-      head.className = "packhead";
-      head.style.background = cat.color;
-      head.textContent = cat.name;
-      card.appendChild(head);
-      var body = document.createElement("div");
-      body.className = "packbody";
-
-      var allItems = cat.items.concat(packExtra[cat.id] || []);
-      allItems.forEach(function(label, idx){
-        var key = cat.id + "-" + idx + "-" + label;
-        var row = document.createElement("div");
-        row.className = "chk-item" + (packState[key] ? " done" : "");
-        row.innerHTML = '<input type="checkbox" id="pk-' + cat.id + '-' + idx + '"' + (packState[key] ? " checked" : "") + '>' +
-          '<label for="pk-' + cat.id + '-' + idx + '">' + label + '</label>';
-        row.querySelector("input").addEventListener("change", function(e){
-          packState[key] = e.target.checked;
-          savePackState();
-          renderPacking();
-        });
-        body.appendChild(row);
-      });
-
-      var addRow = document.createElement("div");
-      addRow.className = "pack-add";
-      addRow.innerHTML = '<input type="text" placeholder="新增項目…"><button type="button">＋</button>';
-      var input = addRow.querySelector("input");
-      var btn = addRow.querySelector("button");
-      function addItem(){
-        var v = input.value.trim();
-        if(!v) return;
-        if(!packExtra[cat.id]) packExtra[cat.id] = [];
-        packExtra[cat.id].push(v);
-        savePackState();
-        renderPacking();
-      }
-      btn.addEventListener("click", addItem);
-      input.addEventListener("keydown", function(e){ if(e.key === "Enter") addItem(); });
-      body.appendChild(addRow);
-
-      card.appendChild(body);
-      packGrid.appendChild(card);
-    });
-  }
-  renderPacking();
-})();
-</script>
 </body>
 </html>

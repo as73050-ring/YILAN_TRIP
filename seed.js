@@ -85,5 +85,51 @@ var SEED_DATA = {
       "礁溪香腸伯是路邊攤，雨天可能提早收攤，建議先電話確認。",
       "Allin_roll 生乳捲要先私訊 IG 預約，沒預約可能撲空，記得出發前幾天就先敲時間。"
     ]
-  }
+  },
+  checklist: [
+    { id: "c1", label: "確認山杉青旅訂房", note: "Email / 訂房平台截圖存好", checked: false },
+    { id: "c2", label: "Allin_roll 生乳捲已私訊 IG 預約取貨時間", note: "", checked: false },
+    { id: "c3", label: "準備足夠現金", note: "空ㄟ農場只收現金，低消 $300/人", checked: false },
+    { id: "c4", label: "雨衣、雨鞋（重機用）", note: "", checked: false },
+    { id: "c5", label: "安全帽、手套、防風鏡片", note: "", checked: false },
+    { id: "c6", label: "行動電源、車充線", note: "", checked: false },
+    { id: "c7", label: "駕照、行照、強制險影本", note: "", checked: false },
+    { id: "c8", label: "防曬乳、個人藥品", note: "", checked: false },
+    { id: "c9", label: "確認 10/17 即時天氣雷達圖，決定騎車或開車", note: "", checked: false }
+  ],
+  packing: [
+    { id: "docs", name: "證件財物", color: "#b65a3a", items: [
+      { id: "docs-0", label: "駕照 / 行照", checked: false },
+      { id: "docs-1", label: "強制險影本", checked: false },
+      { id: "docs-2", label: "身分證", checked: false },
+      { id: "docs-3", label: "現金（空ㄟ農場用）", checked: false },
+      { id: "docs-4", label: "信用卡", checked: false }
+    ]},
+    { id: "riding", name: "騎乘裝備", color: "#2f5a53", items: [
+      { id: "riding-0", label: "安全帽", checked: false },
+      { id: "riding-1", label: "手套", checked: false },
+      { id: "riding-2", label: "雨衣雨褲", checked: false },
+      { id: "riding-3", label: "防風鏡片 / 口罩", checked: false }
+    ]},
+    { id: "clothes", name: "衣物", color: "#7a6a9a", items: [
+      { id: "clothes-0", label: "排汗衣", checked: false },
+      { id: "clothes-1", label: "保暖外套（早晚溫差大）", checked: false },
+      { id: "clothes-2", label: "換洗衣物、襪子", checked: false }
+    ]},
+    { id: "care", name: "盥洗保養", color: "#3a7a5a", items: [
+      { id: "care-0", label: "防曬乳", checked: false },
+      { id: "care-1", label: "牙刷牙膏", checked: false },
+      { id: "care-2", label: "毛巾（溫泉用）", checked: false },
+      { id: "care-3", label: "個人藥品", checked: false }
+    ]},
+    { id: "electronics", name: "3C用品", color: "#b08a2e", items: [
+      { id: "electronics-0", label: "手機充電線", checked: false },
+      { id: "electronics-1", label: "行動電源", checked: false },
+      { id: "electronics-2", label: "車充 / 車架", checked: false }
+    ]},
+    { id: "extras", name: "其他", color: "#5a6a7a", items: [
+      { id: "extras-0", label: "伴手禮袋子（裝生乳捲）", checked: false },
+      { id: "extras-1", label: "垃圾袋", checked: false }
+    ]}
+  ]
 };

@@ -283,6 +283,7 @@ function stopCardHtml(stop){
         '<input class="f-badge" value="' + escapeHtml(stop.badge || "") + '" placeholder="標籤文字（可留空）">' +
         '<div class="f-search">' +
           '<input class="f-searchbox" placeholder="🔍 搜尋地點自動帶入地址…">' +
+          '<button type="button" class="icon-btn mappick-btn" data-act="mappick">🗺️ 地圖找</button>' +
           '<div class="f-searchresults"></div>' +
         "</div>" +
         '<input class="f-address" value="' + escapeHtml(stop.address || "") + '" placeholder="地址（也可以手動輸入/修改）">' +
@@ -324,8 +325,25 @@ function wireSearchBox(root, onPick){
 function renderDay(key){
   var day = DATA.days[key];
   var meta = byId(key + "-meta");
-  meta.querySelector("h3").textContent = day.label;
-  meta.querySelector(".tag").textContent = day.tag;
+  var metaView = meta.querySelector(".view");
+  var metaEdit = meta.querySelector(".edit");
+  metaView.querySelector("h3").textContent = day.label;
+  metaView.querySelector(".tag").textContent = day.tag;
+  if(!meta.dataset.wired){
+    meta.dataset.wired = "1";
+    metaView.querySelector('[data-act="edit"]').addEventListener("click", function(){
+      metaEdit.querySelector(".f-label").value = DATA.days[key].label;
+      metaEdit.querySelector(".f-tag").value = DATA.days[key].tag;
+      editingCount++; metaView.hidden = true; metaEdit.hidden = false;
+    });
+    metaEdit.querySelector('[data-act="save"]').addEventListener("click", function(){
+      var next = JSON.parse(JSON.stringify(DATA));
+      next.days[key].label = metaEdit.querySelector(".f-label").value;
+      next.days[key].tag = metaEdit.querySelector(".f-tag").value;
+      editingCount = Math.max(0, editingCount - 1);
+      saveData(next);
+    });
+  }
 
   var timeline = byId(key + "-timeline");
   timeline.innerHTML = day.stops.map(function(stop){
@@ -355,6 +373,8 @@ function renderDay(key){
       var nameField = editEl.querySelector(".f-name");
       if(!nameField.value.trim()) nameField.value = typedQuery;
     });
+    var mapBtn = editEl.querySelector('[data-act="mappick"]');
+    if(mapBtn){ mapBtn.addEventListener("click", function(){ openMapModal(editEl); }); }
     stopEl.querySelector('[data-act="save"]').addEventListener("click", function(){
       var next = JSON.parse(JSON.stringify(DATA));
       var list = next.days[key].stops;
@@ -404,6 +424,8 @@ function wireAddStopForm(key){
     var nameField = form.querySelector(".f-name");
     if(!nameField.value.trim()) nameField.value = typedQuery;
   });
+  var mapBtn = form.querySelector('[data-act="mappick"]');
+  if(mapBtn){ mapBtn.addEventListener("click", function(){ openMapModal(form); }); }
   form.querySelector('[data-act="add"]').addEventListener("click", function(){
     var name = form.querySelector(".f-name").value.trim();
     if(!name){ alert("請至少輸入地點名稱"); return; }
@@ -427,10 +449,109 @@ function wireAddStopForm(key){
   });
 }
 
-// ---------- note ----------
+// ---------- note（給重機/開車的小提醒，含 AI 建議） ----------
 function renderNote(){
+  var section = byId("noteSection");
+  var viewEl = section.querySelector(".view");
+  var editEl = section.querySelector(".edit");
   byId("noteTitle").textContent = DATA.note.title;
   byId("noteList").innerHTML = DATA.note.items.map(function(t){ return "<li>" + escapeHtml(t) + "</li>"; }).join("");
+
+  if(section.dataset.wired) return;
+  section.dataset.wired = "1";
+  var statusEl = editEl.querySelector(".ai-status");
+
+  viewEl.querySelector('[data-act="edit"]').addEventListener("click", function(){
+    editEl.querySelector(".f-title").value = DATA.note.title;
+    editEl.querySelector(".f-items").value = DATA.note.items.join("\n");
+    statusEl.textContent = "";
+    editingCount++; viewEl.hidden = true; editEl.hidden = false;
+  });
+  editEl.querySelector('[data-act="save"]').addEventListener("click", function(){
+    var next = JSON.parse(JSON.stringify(DATA));
+    var items = editEl.querySelector(".f-items").value.split("\n").map(function(s){ return s.trim(); }).filter(Boolean);
+    next.note = { title: editEl.querySelector(".f-title").value, items: items };
+    editingCount = Math.max(0, editingCount - 1);
+    saveData(next);
+  });
+  editEl.querySelector('[data-act="suggest"]').addEventListener("click", function(){
+    if(!API_URL){
+      statusEl.textContent = "⚠️ 還沒接 Google Sheet 後端，AI 建議需要後端幫忙打 API，本機模式無法使用。";
+      return;
+    }
+    statusEl.textContent = "🤖 正在依目前行程內容請 AI 給建議…";
+    fetch(API_URL, { method: "POST", body: JSON.stringify({ __action: "suggest_note", trip: DATA }) })
+      .then(function(r){ return r.json(); })
+      .then(function(res){
+        if(res && res.ok && res.items && res.items.length){
+          editEl.querySelector(".f-items").value = res.items.join("\n");
+          statusEl.textContent = "✅ 已帶入 AI 建議，確認內容沒問題後記得按「💾 儲存」。";
+        } else {
+          statusEl.textContent = "⚠️ 取得建議失敗：" + (res && res.error ? res.error : "未知錯誤") + "（Apps Script 是否已設定 GEMINI_API_KEY？）";
+        }
+      })
+      .catch(function(){
+        statusEl.textContent = "⚠️ 連線失敗，請稍後再試。";
+      });
+  });
+}
+
+// ---------- 地圖彈窗（搜尋 + 點地圖挑地點，Leaflet + OSM，免金鑰） ----------
+var leafletMap = null;
+var leafletMarker = null;
+var mapModalTarget = null;
+var mapPicked = null;
+
+function ensureLeafletMap(){
+  if(leafletMap) return;
+  leafletMap = L.map("leafletMap").setView([24.75, 121.75], 11);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution: "&copy; OpenStreetMap contributors"
+  }).addTo(leafletMap);
+  leafletMap.on("click", function(e){
+    reverseGeocode(e.latlng.lat, e.latlng.lng);
+  });
+}
+
+function setMapPicked(name, address, lat, lng){
+  mapPicked = { name: name, address: address };
+  if(leafletMarker){ leafletMap.removeLayer(leafletMarker); }
+  leafletMarker = L.marker([lat, lng]).addTo(leafletMap);
+  leafletMap.setView([lat, lng], 16);
+  byId("mapModalPicked").textContent = "📍 " + address;
+  byId("mapModalUse").disabled = false;
+}
+
+function reverseGeocode(lat, lng){
+  byId("mapModalPicked").textContent = "查詢中…";
+  fetch("https://nominatim.openstreetmap.org/reverse?format=json&lat=" + lat + "&lon=" + lng)
+    .then(function(r){ return r.json(); })
+    .then(function(res){
+      var addr = res && res.display_name ? res.display_name : (lat.toFixed(5) + ", " + lng.toFixed(5));
+      var shortName = addr.split(",")[0].trim() || addr;
+      setMapPicked(shortName, addr, lat, lng);
+    })
+    .catch(function(){
+      byId("mapModalPicked").textContent = "查詢失敗，請再點一次或改用搜尋";
+    });
+}
+
+function openMapModal(targetRoot){
+  mapModalTarget = targetRoot;
+  mapPicked = null;
+  byId("mapModalSearch").value = "";
+  byId("mapModalResults").innerHTML = "";
+  byId("mapModalPicked").textContent = "搜尋地點，或直接點地圖上任一點";
+  byId("mapModalUse").disabled = true;
+  byId("mapModalBackdrop").hidden = false;
+  ensureLeafletMap();
+  setTimeout(function(){ leafletMap.invalidateSize(); }, 50);
+  if(leafletMarker){ leafletMap.removeLayer(leafletMarker); leafletMarker = null; }
+}
+function closeMapModal(){
+  byId("mapModalBackdrop").hidden = true;
+  mapModalTarget = null;
 }
 
 var _origRenderAll = renderAll;
@@ -446,6 +567,41 @@ document.addEventListener("DOMContentLoaded", function(){
     byId("syncBanner").hidden = true;
     renderAll();
   });
+
+  byId("mapModalClose").addEventListener("click", closeMapModal);
+  byId("mapModalBackdrop").addEventListener("click", function(e){
+    if(e.target === byId("mapModalBackdrop")) closeMapModal();
+  });
+  byId("mapModalUse").addEventListener("click", function(){
+    if(!mapModalTarget || !mapPicked) return;
+    var addrField = mapModalTarget.querySelector(".f-address");
+    var nameField = mapModalTarget.querySelector(".f-name");
+    if(addrField) addrField.value = mapPicked.address;
+    if(nameField && !nameField.value.trim()) nameField.value = mapPicked.name;
+    closeMapModal();
+  });
+  var mapSearchResults = byId("mapModalResults");
+  var mapSearchDebounced = debounce(function(){
+    var q = byId("mapModalSearch").value.trim();
+    if(q.length < 2){ mapSearchResults.innerHTML = ""; return; }
+    fetch(NOMINATIM_URL + encodeURIComponent(q))
+      .then(function(r){ return r.json(); })
+      .then(function(list){
+        if(!list || !list.length){ mapSearchResults.innerHTML = '<div class="f-searchempty">查無結果，試試更完整的地名</div>'; return; }
+        mapSearchResults.innerHTML = list.map(function(item, i){
+          return '<div class="f-searchitem" data-i="' + i + '">' + escapeHtml(item.display_name) + "</div>";
+        }).join("");
+        mapSearchResults.querySelectorAll(".f-searchitem").forEach(function(itemEl, i){
+          itemEl.addEventListener("click", function(){
+            var item = list[i];
+            setMapPicked(byId("mapModalSearch").value.trim(), item.display_name, Number(item.lat), Number(item.lon));
+            mapSearchResults.innerHTML = "";
+          });
+        });
+      })
+      .catch(function(){ mapSearchResults.innerHTML = '<div class="f-searchempty">搜尋失敗，請稍後再試</div>'; });
+  }, 600);
+  byId("mapModalSearch").addEventListener("input", mapSearchDebounced);
 
   loadData(false).then(function(){
     setInterval(function(){ loadData(true); }, POLL_MS);

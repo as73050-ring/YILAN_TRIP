@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>宜蘭兩天一夜｜2026 行程總覽</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500..700;1,9..144,500&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 :root{
   --bg:#f3f1ea;
@@ -149,7 +150,10 @@ section{margin-top:30px;}
 /* day detail timeline */
 .day{display:none;}
 .day.active{display:block;}
-.daymeta{display:flex;justify-content:space-between;align-items:baseline;margin:4px 2px 14px;flex-wrap:wrap;gap:6px;}
+.daymeta{margin:4px 2px 14px;}
+.daymeta .view{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px;}
+.daymeta .edit{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.daymeta .edit input{flex:1;min-width:160px;}
 .daymeta h3{font-size:19px;font-weight:600;}
 .daymeta .tag{font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--clay);font-weight:600;}
 .timeline{position:relative;}
@@ -169,7 +173,9 @@ section{margin-top:30px;}
 .stopcard a.maplink{display:inline-flex;align-items:center;gap:5px;margin-top:9px;font-size:12px;font-weight:700;color:var(--teal);text-decoration:none;border-bottom:1px solid currentColor;}
 .stopcard .edit{display:flex;flex-direction:column;gap:8px;}
 .stopcard .f-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.f-search{position:relative;}
+.f-search{position:relative;display:flex;gap:6px;}
+.f-search .f-searchbox{flex:1;}
+.mappick-btn{flex-shrink:0;white-space:nowrap;}
 .f-searchresults{position:absolute;left:0;right:0;top:100%;z-index:5;background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);max-height:200px;overflow:auto;}
 .f-searchitem{padding:8px 10px;font-size:12.5px;cursor:pointer;border-bottom:1px solid var(--line);}
 .f-searchitem:last-child{border-bottom:none;}
@@ -184,7 +190,21 @@ section{margin-top:30px;}
 .note b{color:var(--teal);}
 .note ul{margin:8px 0 0;padding-left:18px;}
 .note li{margin-bottom:4px;}
+.note .notehead{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;}
+.note .edit{display:flex;flex-direction:column;gap:8px;}
+.note .f-title{font-weight:700;}
+.note .ai-status{font-size:12px;color:var(--teal);min-height:16px;}
 .localnote{font-size:11.5px;color:var(--ink-soft);text-align:center;margin-top:8px;}
+
+/* map picker modal */
+.modal-backdrop{position:fixed;inset:0;background:rgba(20,22,16,.55);z-index:50;display:flex;align-items:center;justify-content:center;padding:16px;}
+.modal{background:var(--surface);border-radius:16px;box-shadow:var(--shadow);max-width:520px;width:100%;max-height:90vh;overflow:auto;padding:16px;display:flex;flex-direction:column;gap:10px;}
+.modal-head{display:flex;justify-content:space-between;align-items:center;}
+.modal-title{font-weight:700;font-size:15px;}
+.modal-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;}
+.modal-picked{font-size:12.5px;color:var(--ink-soft);flex:1;}
+#leafletMap{height:300px;border-radius:10px;overflow:hidden;}
+#mapModalResults{position:static;max-height:140px;}
 
 /* checklist */
 .checklist{padding:6px 4px;}
@@ -281,7 +301,10 @@ footer{margin-top:36px;font-size:12px;color:var(--ink-soft);text-align:center;}
 
   <section id="day1">
     <div class="section-head"><span class="ico">📅</span><h2>每日行程細節</h2></div>
-    <div class="daymeta" id="day1-meta"><h3></h3><span class="tag"></span></div>
+    <div class="daymeta" id="day1-meta">
+      <div class="view"><h3></h3><span class="tag"></span><button class="icon-btn" data-act="edit">✏️</button></div>
+      <div class="edit" hidden><input class="f-label" placeholder="這天的標題"><input class="f-tag" placeholder="日期/天氣標籤"><button class="icon-btn" data-act="save">💾 儲存</button></div>
+    </div>
     <div class="timeline" id="day1-timeline"></div>
     <div class="addstopcard" id="day1-addform">
       <div class="addstop-title">＋ 新增地點</div>
@@ -295,7 +318,7 @@ footer{margin-top:36px;font-size:12px;color:var(--ink-soft);text-align:center;}
       </div>
       <input class="f-name" placeholder="地點名稱">
       <input class="f-badge" placeholder="標籤文字（可留空）">
-      <div class="f-search"><input class="f-searchbox" placeholder="🔍 搜尋地點自動帶入地址…"><div class="f-searchresults"></div></div>
+      <div class="f-search"><input class="f-searchbox" placeholder="🔍 搜尋地點自動帶入地址…"><button type="button" class="icon-btn mappick-btn" data-act="mappick">🗺️ 地圖找</button><div class="f-searchresults"></div></div>
       <input class="f-address" placeholder="地址（也可以手動輸入）">
       <textarea class="f-note" rows="2" placeholder="說明"></textarea>
       <input class="f-extra" placeholder="附加資訊，用「｜」分隔">
@@ -305,7 +328,10 @@ footer{margin-top:36px;font-size:12px;color:var(--ink-soft);text-align:center;}
   </section>
 
   <section id="day2">
-    <div class="daymeta" id="day2-meta"><h3></h3><span class="tag"></span></div>
+    <div class="daymeta" id="day2-meta">
+      <div class="view"><h3></h3><span class="tag"></span><button class="icon-btn" data-act="edit">✏️</button></div>
+      <div class="edit" hidden><input class="f-label" placeholder="這天的標題"><input class="f-tag" placeholder="日期/天氣標籤"><button class="icon-btn" data-act="save">💾 儲存</button></div>
+    </div>
     <div class="timeline" id="day2-timeline"></div>
     <div class="addstopcard" id="day2-addform">
       <div class="addstop-title">＋ 新增地點</div>
@@ -319,7 +345,7 @@ footer{margin-top:36px;font-size:12px;color:var(--ink-soft);text-align:center;}
       </div>
       <input class="f-name" placeholder="地點名稱">
       <input class="f-badge" placeholder="標籤文字（可留空）">
-      <div class="f-search"><input class="f-searchbox" placeholder="🔍 搜尋地點自動帶入地址…"><div class="f-searchresults"></div></div>
+      <div class="f-search"><input class="f-searchbox" placeholder="🔍 搜尋地點自動帶入地址…"><button type="button" class="icon-btn mappick-btn" data-act="mappick">🗺️ 地圖找</button><div class="f-searchresults"></div></div>
       <input class="f-address" placeholder="地址（也可以手動輸入）">
       <textarea class="f-note" rows="2" placeholder="說明"></textarea>
       <input class="f-extra" placeholder="附加資訊，用「｜」分隔">
@@ -328,9 +354,20 @@ footer{margin-top:36px;font-size:12px;color:var(--ink-soft);text-align:center;}
     </div>
   </section>
 
-  <div class="note">
-    <b id="noteTitle"></b>
-    <ul id="noteList"></ul>
+  <div class="note" id="noteSection">
+    <div class="view">
+      <div class="notehead"><b id="noteTitle"></b><button class="icon-btn" data-act="edit">✏️</button></div>
+      <ul id="noteList"></ul>
+    </div>
+    <div class="edit" hidden>
+      <div class="notehead">
+        <input class="f-title" placeholder="標題">
+        <button class="icon-btn" data-act="suggest">🤖 依目前行程 AI 建議</button>
+        <button class="icon-btn" data-act="save">💾 儲存</button>
+      </div>
+      <textarea class="f-items" rows="6" placeholder="每行一條提醒"></textarea>
+      <div class="ai-status"></div>
+    </div>
   </div>
 
   <section>
@@ -351,7 +388,24 @@ footer{margin-top:36px;font-size:12px;color:var(--ink-soft);text-align:center;}
   <footer>行程與地址資訊於 2026/10/06–07 查詢整理，出發前請再次確認最新營業公告。地點/順序可由任何有連結的人編輯，修改後最多 <span id="pollSecLabel">25</span> 秒內其他人會看到。</footer>
 </div>
 
+<div class="modal-backdrop" id="mapModalBackdrop" hidden>
+  <div class="modal" id="mapModal">
+    <div class="modal-head">
+      <div class="modal-title">🗺️ 在地圖上找地點</div>
+      <button class="icon-btn" id="mapModalClose">✕</button>
+    </div>
+    <input id="mapModalSearch" placeholder="輸入地點名稱搜尋…">
+    <div id="mapModalResults" class="f-searchresults"></div>
+    <div id="leafletMap"></div>
+    <div class="modal-foot">
+      <div id="mapModalPicked" class="modal-picked">搜尋地點，或直接點地圖上任一點</div>
+      <button class="icon-btn" id="mapModalUse" disabled>使用這個地點</button>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="config.js"></script>
 <script src="seed.js"></script>
 <script src="app.js"></script>

@@ -501,6 +501,14 @@ var leafletMap = null;
 var leafletMarker = null;
 var mapModalTarget = null;
 var mapPicked = null;
+var poiMarkers = [];
+var poiIcon = L.divIcon({
+  className: "poi-pin",
+  html: "<span>📍</span>",
+  iconSize: [22, 22],
+  iconAnchor: [11, 20],
+  popupAnchor: [0, -18]
+});
 
 function ensureLeafletMap(){
   if(leafletMap) return;
@@ -512,6 +520,40 @@ function ensureLeafletMap(){
   leafletMap.on("click", function(e){
     reverseGeocode(e.latlng.lat, e.latlng.lng);
   });
+  leafletMap.on("moveend", debounce(loadNearbyPois, 500));
+}
+
+function clearPoiMarkers(){
+  poiMarkers.forEach(function(m){ leafletMap.removeLayer(m); });
+  poiMarkers = [];
+}
+
+function loadNearbyPois(){
+  if(!leafletMap) return;
+  if(leafletMap.getZoom() < 15){ clearPoiMarkers(); return; }
+  var b = leafletMap.getBounds();
+  var bbox = b.getSouth() + "," + b.getWest() + "," + b.getNorth() + "," + b.getEast();
+  var query = "[out:json][timeout:15];(" +
+    'node["name"]["amenity"](' + bbox + ");" +
+    'node["name"]["shop"](' + bbox + ");" +
+    'node["name"]["tourism"](' + bbox + ");" +
+    'node["name"]["leisure"](' + bbox + ");" +
+    ");out center 80;";
+  fetch("https://overpass-api.de/api/interpreter?data=" + encodeURIComponent(query))
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      clearPoiMarkers();
+      (data.elements || []).forEach(function(el){
+        if(el.lat == null || el.lon == null || !el.tags || !el.tags.name) return;
+        var name = el.tags.name;
+        var cat = el.tags.amenity || el.tags.shop || el.tags.tourism || el.tags.leisure || "";
+        var marker = L.marker([el.lat, el.lon], { icon: poiIcon }).addTo(leafletMap);
+        marker.bindPopup("<b>" + escapeHtml(name) + "</b>" + (cat ? "<br>" + escapeHtml(cat) : ""));
+        marker.on("click", function(){ reverseGeocode(el.lat, el.lon, name); });
+        poiMarkers.push(marker);
+      });
+    })
+    .catch(function(){ /* Overpass 偶爾會忙線，失敗就安靜忽略，不影響點地圖/搜尋 */ });
 }
 
 function setMapPicked(name, address, lat, lng){
@@ -523,13 +565,13 @@ function setMapPicked(name, address, lat, lng){
   byId("mapModalUse").disabled = false;
 }
 
-function reverseGeocode(lat, lng){
+function reverseGeocode(lat, lng, preferredName){
   byId("mapModalPicked").textContent = "查詢中…";
   fetch("https://nominatim.openstreetmap.org/reverse?format=json&lat=" + lat + "&lon=" + lng)
     .then(function(r){ return r.json(); })
     .then(function(res){
       var addr = res && res.display_name ? res.display_name : (lat.toFixed(5) + ", " + lng.toFixed(5));
-      var shortName = addr.split(",")[0].trim() || addr;
+      var shortName = preferredName || addr.split(",")[0].trim() || addr;
       setMapPicked(shortName, addr, lat, lng);
     })
     .catch(function(){

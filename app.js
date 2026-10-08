@@ -381,6 +381,8 @@ function renderDay(key){
       next.days[key].label = metaEdit.querySelector(".f-label").value;
       next.days[key].tag = metaEdit.querySelector(".f-tag").value;
       editingCount = Math.max(0, editingCount - 1);
+      metaEdit.hidden = true;
+      metaView.hidden = false;
       saveData(next, false, "編輯 " + (key === "day1" ? "Day1" : "Day2") + " 標題/標籤");
     });
   }
@@ -512,6 +514,8 @@ function renderNote(){
     var items = editEl.querySelector(".f-items").value.split("\n").map(function(s){ return s.trim(); }).filter(Boolean);
     next.note = { title: editEl.querySelector(".f-title").value, items: items };
     editingCount = Math.max(0, editingCount - 1);
+    editEl.hidden = true;
+    viewEl.hidden = false;
     saveData(next, false, "編輯提醒清單");
   });
   editEl.querySelector('[data-act="suggest"]').addEventListener("click", function(){

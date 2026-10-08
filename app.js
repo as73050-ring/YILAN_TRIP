@@ -525,9 +525,9 @@ function renderNote(){
       .then(function(res){
         if(res && res.ok && res.items && res.items.length){
           editEl.querySelector(".f-items").value = res.items.join("\n");
-          statusEl.textContent = "✅ 已帶入 AI 建議，確認內容沒問題後記得按「💾 儲存」。";
+          statusEl.textContent = "✅ 已帶入 AI 建議（模型：" + (res.model || "未知") + "），確認內容沒問題後記得按「💾 儲存」。";
         } else {
-          statusEl.textContent = "⚠️ 取得建議失敗：" + (res && res.error ? res.error : "未知錯誤") + "（Apps Script 是否已設定 GEMINI_API_KEY？）";
+          statusEl.textContent = "⚠️ 取得建議失敗：" + (res && res.error ? res.error : "未知錯誤");
         }
       })
       .catch(function(){
